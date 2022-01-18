@@ -6,9 +6,27 @@
 
 import copy
 import os
-import sys
-path = sys.argv[1]
+import argparse
 
+print('')
+# Banner:
+banner = '''
+     ____                            ____          _      ____                                  
+    / ___|  ___  _   _ _ __ ___ ___ / ___|___   __| | ___/ ___|  ___ __ _ _ __  _ __   ___ _ __ 
+    \___ \ / _ \| | | | '__/ __/ _ \ |   / _ \ / _` |/ _ \___ \ / __/ _` | '_ \| '_ \ / _ \ '__|
+     ___) | (_) | |_| | | | (_|  __/ |__| (_) | (_| |  __/___) | (_| (_| | | | | | | |  __/ |   
+    |____/ \___/ \__,_|_|  \___\___|\____\___/ \__,_|\___|____/ \___\__,_|_| |_|_| |_|\___|_|   
+                                                                                               
+                                              Framework 0.1
+                                                                                                                        
+    '''
+print(banner)
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-P", help="Path to directory which shall be scanned",
+                    type=str)
+args = parser.parse_args()
+path = args.P
 # PHP Vulnerabilities:
 php_vulns = []
 php_vulns.append((('$wpdb->get_results(', '$', ')'), 'SQL-Injection', 'Exploitable if Variable is User-controlled and not sanitized', ('http://ottopress.com/2013/better-know-a-vulnerability-sql-injection/', 'https://github.com/Hacker5preme/Exploits/tree/main/Wordpress/CVE-2021-43408', 'https://appcheck-ng.com/security-advisory-duplicate-post-wordpress-plugin-sql-injection-vulnerability/'), 3, 'Ron Jost (@Hacker5preme)'))
@@ -50,7 +68,7 @@ def scancode(path):
                         for numbers in lines:
                             if search_index_check in range(numbers[0], numbers[1]):
                                 line_now = lines.index(numbers)
-                                vulns.append((vuln, php_vuln, line_now +1))
+                                vulns.append((vuln, php_vuln, line_now +1, file))
                                 last_search_index = search_index + len(vuln)
                                 break
                     else:
@@ -62,3 +80,21 @@ def scancode(path):
 
 
 vulnerabilities = scancode(path)
+
+# Output:
+def Output(vulns):
+    print('Scanning: ' + path + ':')
+    print('')
+    for vuln in vulns:
+        print('[!] Possible ' + vuln[1][1] + ':')
+        print(str(vuln[3]) + ':' + str(vuln[2]))
+        print(vuln[0])
+        print(vuln[1][2])
+        print('References:')
+        for refs in vuln[1][3]:
+            print(' - ' + refs)
+        print('')
+        print('')
+
+
+Output(vulnerabilities)
