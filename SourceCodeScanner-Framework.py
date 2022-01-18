@@ -7,7 +7,7 @@
 import copy
 import os
 import argparse
-
+from colorama import init, Fore, Style
 print('')
 # Banner:
 banner = '''
@@ -31,6 +31,7 @@ path = args.P
 php_vulns = []
 php_vulns.append((('$wpdb->get_results(', '$', ')'), 'SQL-Injection', 'Exploitable if Variable is User-controlled and not sanitized', ('http://ottopress.com/2013/better-know-a-vulnerability-sql-injection/', 'https://github.com/Hacker5preme/Exploits/tree/main/Wordpress/CVE-2021-43408', 'https://appcheck-ng.com/security-advisory-duplicate-post-wordpress-plugin-sql-injection-vulnerability/'), 3, 'Ron Jost (@Hacker5preme)'))
 
+init(autoreset=True)
 # Code Scanner:
 def scancode(path):
 
@@ -78,7 +79,6 @@ def scancode(path):
                 pass
     return vulns
 
-
 vulnerabilities = scancode(path)
 
 # Output:
@@ -86,15 +86,20 @@ def Output(vulns):
     print('Scanning: ' + path + ':')
     print('')
     for vuln in vulns:
-        print('[!] Possible ' + vuln[1][1] + ':')
-        print(str(vuln[3]) + ':' + str(vuln[2]))
-        print(vuln[0])
-        print(vuln[1][2])
+        if vuln[1][4] == 3:
+            color = Fore.RED
+        if vuln[1][4] == 2:
+            color = 'orange'
+        if vuln[1][4] == 1:
+            color = 'yellow'
+        print(color + '[!] Possible ' + vuln[1][1] + ':')
+        print(color + str(vuln[3]) + ':' + str(vuln[2]))
+        print(Fore.WHITE + vuln[0])
+        print(color + vuln[1][2])
         print('References:')
         for refs in vuln[1][3]:
             print(' - ' + refs)
         print('')
         print('')
-
 
 Output(vulnerabilities)
