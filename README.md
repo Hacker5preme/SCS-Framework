@@ -3,6 +3,10 @@
 ## Idea:
 #### The idea of the SourceCodeScanning Framework is to provide a SourceCodeScanning Framework, which analyzes files and directories statically for known vulnerable code snippets, which are linked to published exploits and vulnerabilities. Let's make code safer !
 
+## Usage:
+![grafik](https://user-images.githubusercontent.com/54862244/149993027-b72d3654-4642-4547-8dc0-0891b7645753.png)
+
+
 ## Vulnerability Format:
 #### For Contribution:
 - Beginning of the vulnerable Code Snippet | String, which needs to be present in the snippet | End of the snippet
@@ -11,12 +15,7 @@
 - Links to exploits, vulnerabilities and blogposts
 - Severity: High (3), Medium (2), Low (1)
 - Nametag
-### Contribution example:
-(('$wpdb->get_results(', '$', ')'), 'SQL-Injection', 'Exploitable if Variable is User-controlled and not sanitized', ('http://ottopress.com/2013/better-know-a-vulnerability-sql-injection/', 'https://github.com/Hacker5preme/Exploits/tree/main/Wordpress/CVE-2021-43408', 'https://appcheck-ng.com/security-advisory-duplicate-post-wordpress-plugin-sql-injection-vulnerability/'), 3, 'Ron Jost (@Hacker5preme)')
 
 ## Current Status:
 - [+] Contributors: 1
 - [+] Vulnerable Code Snippets: 1
-
-## Usage:
-python3 SourceCodeScanner-Framework.py [path]
