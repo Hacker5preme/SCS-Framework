@@ -1,7 +1,7 @@
 # SourceCodeScanning Framework
 
 ## Idea:
-#### The idea of the SourceCodeScanning Framework is to provide a SourceCodeScanning Framework, which analyzes files and directories statically for known vulnerable code snippets, which are linked to published exploits and vulnerabilities.
+#### The idea of the SourceCodeScanning Framework is to provide a SourceCodeScanning Framework, which analyzes files and directories statically for known vulnerable code snippets, which are linked to published exploits and vulnerabilities. Let's make code safer !
 
 ## Vulnerability Format:
 #### For Contribution:
