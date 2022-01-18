@@ -6,16 +6,6 @@
 ## Usage:
 ![grafik](https://user-images.githubusercontent.com/54862244/149993027-b72d3654-4642-4547-8dc0-0891b7645753.png)
 
-
-## Vulnerability Format:
-#### For Contribution:
-- Beginning of the vulnerable Code Snippet | String, which needs to be present in the snippet | End of the snippet
-- Vulnerability description
-- Condition under the code snippet is vulnerable and exploitable
-- Links to exploits, vulnerabilities and blogposts
-- Severity: High (3), Medium (2), Low (1)
-- Nametag
-
 ## Current Status:
 - [+] Contributors: 1
 - [+] Vulnerable Code Snippets: 1
