@@ -1,7 +1,7 @@
 '''
 [@] Author: Ron Jost (Hacker5preme)
 [+] Contributors: 1
-[*] Vulnerable Code snippets: 1
+[*] Vulnerable Code snippets: 0
 '''
 
 import copy
@@ -29,7 +29,7 @@ args = parser.parse_args()
 path = args.P
 # PHP Vulnerabilities:
 php_vulns = []
-php_vulns.append((('$wpdb->get_results(', '$', ')'), 'SQL-Injection', 'Exploitable if Variable is User-controlled and not sanitized', ('http://ottopress.com/2013/better-know-a-vulnerability-sql-injection/', 'https://github.com/Hacker5preme/Exploits/tree/main/Wordpress/CVE-2021-43408', 'https://appcheck-ng.com/security-advisory-duplicate-post-wordpress-plugin-sql-injection-vulnerability/'), 3, 'Ron Jost (@Hacker5preme)'))
+#php_vulns.append((('$wpdb->get_results(', '$', ')'), 'SQL-Injection', 'Exploitable if Variable is User-controlled and not sanitized', ('http://ottopress.com/2013/better-know-a-vulnerability-sql-injection/', 'https://github.com/Hacker5preme/Exploits/tree/main/Wordpress/CVE-2021-43408', 'https://appcheck-ng.com/security-advisory-duplicate-post-wordpress-plugin-sql-injection-vulnerability/'), 3, 'Ron Jost (@Hacker5preme)'))
 
 init(autoreset=True)
 # Code Scanner:
