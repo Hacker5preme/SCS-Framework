@@ -1,7 +1,7 @@
 '''
 [@] Author: Ron Jost (Hacker5preme)
 [+] Contributors: 1
-[*] Vulnerable Code snippets: 1
+[*] Vulnerable Code snippets: 0
 '''
 
 import copy
@@ -50,7 +50,7 @@ def scancode(path):
             else:
                 elements_in_line.append(element)
         file_content.close()
-        php_discoveries = PHP_vulnerabilities(file, lines)
+        php_discoveries = PHP_vulnerabilities(file_search, lines)
 
 vulnerabilities = scancode(path)
 
