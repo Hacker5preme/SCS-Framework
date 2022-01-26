@@ -18,7 +18,7 @@ def scan_open_redirect(php_file, lines):
 	
 	# References PHP WP:
 	wp_ref = 'https://developer.wordpress.org/reference/functions/wp_redirect/'
-	CVE_ref_wp = ''
+	CVE_ref = 'https://nvd.nist.gov/vuln/detail/CVE-2020-18660'
 	
 	# Non WP: PHP Code snippet to redirect to URL
 	string_search_begin = 'header('
