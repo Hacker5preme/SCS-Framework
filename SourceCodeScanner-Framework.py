@@ -9,6 +9,8 @@ import os
 import argparse
 from colorama import init, Fore, Style
 from PHP_Snippets import *
+import re
+
 print('')
 # Banner:
 banner = '''
