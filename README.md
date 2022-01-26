@@ -9,4 +9,4 @@
 
 ## Current Status:
 - [+] Contributors: 1
-- [+] Vulnerable Code Snippets: 1
+- [+] Vulnerable Code Snippets: 0
