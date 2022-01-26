@@ -53,7 +53,7 @@ def scancode(path):
                 elements_in_line.append(element)
         file_content.close()
         php_discoveries = PHP_vulnerabilities(file_search, lines)
-
+        return php_discoveries
 vulnerabilities = scancode(path)
 
 # Output:

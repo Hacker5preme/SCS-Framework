@@ -1,4 +1,6 @@
-# Function file from PHP-Vulnerability scans. Easyier to edit:
+# Function file from PHP-Vulnerability scans. Easier to edit:
+import copy
+import re
 
 def PHP_vulnerabilities(php_file, lines):
     # Describes all vulnerabilites
@@ -21,45 +23,61 @@ def scan_open_redirect(php_file, lines):
 	CVE_ref = 'https://nvd.nist.gov/vuln/detail/CVE-2020-18660'
 	
 	# Non WP: PHP Code snippet to redirect to URL
-	string_search_begin = 'header('
-	string_search_middle = '$'
-	string_search_end = ')'
+	string_search_begin = r'header('
+	string_search_middle = r'$'
+	string_search_end = r')'
 	direct_variables = ['$_GET[', '$_POST[']
 	
 	# WP: PHP Code snippet to redirect to URL
-	string_search_begin_wp = 'wp_redirect('
+	string_search_begin_wp = r'wp_redirect('
 	
 	# Vulnerabilities:
 	vulnerabilites = []
 	file_check = copy.deepcopy(php_file)
-	
+
 	# Check if non_wp occurs:
-	result_non_wp = [_.start() for _ in re.finditer(string_search_begin, file_check)]
-	if result_non_wp != 0:
+	result_non_wp = [i for i in range(len(file_check)) if file_check.startswith(string_search_begin, i)]
+	if len(result_non_wp) != 0:
 		for element in result_non_wp:
-			string_to_search = file_check[element: file_check[element:].find(')')]
+			string_to_search = file_check[element:]
+			string_to_search = string_to_search[:string_to_search.find(')') + 1]
 			if string_search_middle in string_to_search:
 				if direct_variables[0] in string_to_search or direct_variables[1] in string_to_search:
-					# Do the vulnerability return and match lines (DEVELOP)
-					print('GOT VULN')
+					# Line matching:
+					for line in lines:
+						if element >= line[0] and element <= line[1]:
+							print(lines.index(line) + 1)
+
+					# Construct vulnerability info and add it
+
 				else:
+					print('LOL')
+					pass
 					# Variable Analyzer (DEVELOP)
 					# find variable
-					variable_info = backtrack_variable_PHP(variable_found, file_check)
+					#variable_info = backtrack_variable_PHP(variable_found, file_check)
 					# Check if variable and then do the vuln infos 
 					
-	result_wp = [_.start() for _ in re.finditer(string_search_begin, file_check)]
+	result_wp = [i for i in range(len(file_check)) if file_check.startswith(string_search_begin_wp, i)]
 	if result_wp != 0:
 		for element in result_wp:
-			string_to_search = file_check[element: file_check[element:].find(')')]
+			string_to_search = file_check[element:]
+			string_to_search = string_to_search[:string_to_search.find(')') + 1]
 			if string_search_middle in string_to_search:
 				if direct_variables[0] in string_to_search or direct_variables[1] in string_to_search:
-					# Do the vulnerability return and match lines (DEVELOP)
-					print('GOT VULN')
+					# Line matching:
+					for line in lines:
+						if element >= line[0] and element <= line[1]:
+							print(lines.index(line) + 1)
+
+				# Construct vulnerability info and add it
+
 				else:
-					# Variable Analyzer (DEVELOP)
-					# find variable
-					variable_info = backtrack_variable_PHP(variable_found, file_check)
-					# Check if variable and then do the vuln infos 
+					print('LOL')
+					pass
+			# Variable Analyzer (DEVELOP)
+			# find variable
+			# variable_info = backtrack_variable_PHP(variable_found, file_check)
+			# Check if variable and then do the vuln infos
 					
 	return vulnerabilites
