@@ -7,9 +7,8 @@
 import copy
 import os
 import argparse
-from colorama import init, Fore, Style
+from colorama import init, Fore
 from PHP_Snippets import *
-import re
 
 print('')
 # Banner:
@@ -67,12 +66,11 @@ def Output(vulns):
             color = 'orange'
         if vuln[1][4] == 1:
             color = 'yellow'
-        print(color + '[!] Possible ' + vuln[1][1] + ':')
-        print(color + str(vuln[3]) + ':' + str(vuln[2]))
-        print(Fore.WHITE + vuln[0])
-        print(color + vuln[1][2])
+        print(color + '[!] Possible ' + vuln[0] + ':')
+        print(color + str(vuln[1]) + ':' + str(vuln[2]))
+        print(Fore.WHITE + vuln[3])
         print('References:')
-        for refs in vuln[1][3]:
+        for refs in vuln[4]:
             print(' - ' + refs)
         print('')
         print('')
