@@ -35,7 +35,7 @@ def scancode(path):
 
     # PHP Files to scan:
     files_to_scan_php = [os.path.join(dp, f) for dp, dn, filenames in os.walk(path) for f in filenames if os.path.splitext(f)[1] == '.php']
-    vulns = []
+  
     # Scan every php file for php_vulnerabilities
     for file in files_to_scan_php:
         file_content = open(file, 'r')
@@ -51,21 +51,18 @@ def scancode(path):
             else:
                 elements_in_line.append(element)
         file_content.close()
-        php_discoveries = PHP_vulnerabilities(file_search, lines)
-        return php_discoveries
-vulnerabilities = scancode(path)
+        php_discoveries = PHP_vulnerabilities(file_search, lines, file)
+        if type(php_discoveries) != list:
+                php_discoveries = []
 
+        Output(php_discoveries)
+    
 # Output:
 def Output(vulns):
     print('Scanning: ' + path + ':')
     print('')
+    color = Fore.RED
     for vuln in vulns:
-        if vuln[1][4] == 3:
-            color = Fore.RED
-        if vuln[1][4] == 2:
-            color = 'orange'
-        if vuln[1][4] == 1:
-            color = 'yellow'
         print(color + '[!] Possible ' + vuln[0] + ':')
         print(color + str(vuln[1]) + ':' + str(vuln[2]))
         print(Fore.WHITE + vuln[3])
@@ -75,4 +72,4 @@ def Output(vulns):
         print('')
         print('')
 
-Output(vulnerabilities)
+scancode(path)
