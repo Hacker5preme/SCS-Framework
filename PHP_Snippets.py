@@ -118,8 +118,6 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 
 	# Check if non_wp occurs:
 	vulnerablities_non_wp = check_string_vulnerable(file_check, string_search_begin, string_search_middle, string_search_end, lines, verbosity)
-	for element in vulnerablities_non_wp:
-		print(element)
 
 	# Check if wp occurs:
 	vulnerablities_wp = check_string_vulnerable(file_check, string_search_begin_wp, string_search_middle, string_search_end, lines, verbosity)
