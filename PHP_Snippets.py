@@ -1,6 +1,7 @@
 # Function file from PHP-Vulnerability scans. Easier to edit:
 import copy
 import string
+import numpy as np
 
 def PHP_vulnerabilities(php_file, lines, file, verbosity):
 	# Describes all vulnerabilites
@@ -8,19 +9,39 @@ def PHP_vulnerabilities(php_file, lines, file, verbosity):
 	vulnerabilities_open_redirect = scan_open_redirect(php_file, lines, file, verbosity)
 	return vulnerabilities_open_redirect
 
-def backtrack_variable_PHP(variablename, file_content, verbosity):
+def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos):
 	# Backtrack variable:
 	# Get all mentions of variable:
+	variable_definition = []
 	search_terms = [variablename + '=', variablename + ' =']
 	possible_code_finds = [i for i in range(len(file_content)) if file_content.startswith(search_terms[0], i)]
 	possible_code_finds = possible_code_finds + [i for i in range(len(file_content)) if file_content.startswith(search_terms[1], i)]
 	if len(possible_code_finds) == 1:
 		# If only one mention exists:
-		pass
+		position = possible_code_finds[0]
+		variable_string = file_content[position:]
+		variable_string = variable_string[:variable_string.find(';')]
+		if '$_GET[' in variable_string or '$_POST[' in variable_string:
+			variable_definition.append((variable_string, position, 0))
 	if len(possible_code_finds) > 1:
-		pass
-	if len(possible_code_finds) == 0:
-		pass
+		# Determine closest position to vulnerable code snippet:
+		possiblities = np.asarray(possible_code_finds)
+		position = possiblities[possiblities < vuln_pos].max()
+		variable_string = file_content[position:]
+		variable_string = variable_string[:variable_string.find(';')]
+		if '$_GET[' in variable_string or '$_POST[' in variable_string:
+			variable_definition.append((variable_string, position, 0))
+	if len(possible_code_finds) == 0 and verbosity == 1:
+		# Check for definition in function !, otherwise no User-Input
+		function_finds = [i for i in range(len(file_content)) if file_content.startswith('function ', i)]
+		function_finds = np.asarray(function_finds)
+		position = function_finds[function_finds < vuln_pos].max()
+		variable_string = file_content[position:]
+		variable_string = variable_string[:variable_string.find(')')+1]
+		if variablename in variable_string:
+			variable_definition.append((variable_string, position, 1))
+	return variable_definition
+
 
 def check_string_vulnerable(file_content, string_begin, string_middle, string_end, lines, verbosity):
 	# Check all possible occurences of vulnerable code snippet beggining in file
@@ -42,15 +63,23 @@ def check_string_vulnerable(file_content, string_begin, string_middle, string_en
 			# If a variable is present in the possible vulnerable snippet
 			else:
 				# Get Variablename
-				print(string_to_search)
 				check = list(string_to_search[string_to_search.find('$') + 1:])
 				for element in check:
 					if element not in allowed_variable:
 						index = check.index(element)
 						break
 				variablename = '$' + ''.join(check[:index])
-				print(variablename)
-				backtrack_variable_PHP(variablename, file_content, verbosity)
+				variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln)
+				if len (variable_def) == 0:
+					pass
+				else:
+					# Line matching:
+					for line in lines:
+						if possible_vuln >= line[0] and possible_vuln <= line[1]:
+							vuln = [lines.index(line) + 1, string_to_search]
+							vuln.append(variable_def)
+							vulnerabilites.append(vuln)
+							break
 
 	return vulnerabilites
 
@@ -74,15 +103,21 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	# Check if non_wp occurs:
 	vulnerablities_non_wp = check_string_vulnerable(file_check, string_search_begin, string_search_middle, string_search_end, lines, verbosity)
 
+
 	# Check if wp occurs:
 	vulnerablities_wp = check_string_vulnerable(file_check, string_search_begin_wp, string_search_middle, string_search_end, lines, verbosity)
+	if len(vulnerablities_wp) != 0:
+		vulnerablities_wp = vulnerablities_wp[0]
 
 	for vulnerability in vulnerablities_non_wp:
-		vulnerabilites.append(('Open-Redirect', path_file, vulnerability[0], vulnerability[1], [clean_php_references, open_redirect_references, CVE_ref]) )
+		if len (vulnerability) == 2:
+			vulnerability.append(0)
+		vulnerabilites.append(('Open-Redirect', path_file, vulnerability[0], vulnerability[1], [clean_php_references, open_redirect_references, CVE_ref], vulnerability[2]) )
 
-	for vulnerabiiĺity_wp in vulnerablities_wp:
-		vulnerabilites.append(('Open-Redirect', path_file, vulnerabiiĺity_wp[0], vulnerabiiĺity_wp[1], [wp_ref, open_redirect_references, CVE_ref_wp]))
-
+	for vulnerabiĺity_wp in vulnerablities_wp:
+		if len (vulnerabiĺity_wp) == 2:
+			vulnerabiĺity_wp.append(0)
+		vulnerabilites.append(('Open-Redirect', path_file, vulnerabiĺity_wp[0], vulnerabiĺity_wp[1], [wp_ref, open_redirect_references, CVE_ref_wp], vulnerabiĺity_wp[2]))
 	return vulnerabilites
 
 
