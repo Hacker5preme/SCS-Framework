@@ -10,7 +10,7 @@ def PHP_vulnerabilities(php_file, lines, file, verbosity):
 	vulnerabilities_open_redirect = scan_open_redirect(php_file, lines, file, verbosity)
 	return vulnerabilities_open_redirect
 
-def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos):
+def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, lines):
 	# Backtrack variable:
 	# Get all mentions of variable:
 	variable_definition = []
@@ -23,7 +23,12 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos):
 		variable_string = file_content[position:]
 		variable_string = variable_string[:variable_string.find(';')]
 		if '$_GET[' in variable_string or '$_POST[' in variable_string:
-			variable_definition.append((variable_string, position, 0))
+			# Line matching:
+			for line in lines:
+				if position >= line[0] and position <= line[1]:
+					information = [lines.index(line) + 1, variable_string, 0]
+					variable_definition.append(information)
+					break
 	if len(possible_code_finds) > 1:
 		# Determine closest position to vulnerable code snippet:
 		possiblities = np.asarray(possible_code_finds)
@@ -31,7 +36,12 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos):
 		variable_string = file_content[position:]
 		variable_string = variable_string[:variable_string.find(';')]
 		if '$_GET[' in variable_string or '$_POST[' in variable_string:
-			variable_definition.append((variable_string, position, 0))
+			# Line matching:
+			for line in lines:
+				if position >= line[0] and position <= line[1]:
+					information = [lines.index(line) + 1, variable_string, 0]
+					variable_definition.append(information)
+					break
 	if len(possible_code_finds) == 0 and verbosity == 1:
 		# Check for definition in function !, otherwise no User-Input
 		function_finds = [i for i in range(len(file_content)) if file_content.startswith('function ', i)]
@@ -40,7 +50,12 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos):
 		variable_string = file_content[position:]
 		variable_string = variable_string[:variable_string.find(')')+1]
 		if variablename in variable_string:
-			variable_definition.append((variable_string, position, 1))
+			# Line matching:
+			for line in lines:
+				if position >= line[0] and position <= line[1]:
+					information = [lines.index(line) + 1, variable_string, 1]
+					variable_definition.append(information)
+					break
 	return variable_definition
 
 
@@ -70,7 +85,7 @@ def check_string_vulnerable(file_content, string_begin, string_middle, string_en
 						index = check.index(element)
 						break
 				variablename = '$' + ''.join(check[:index])
-				variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln)
+				variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln, lines)
 				if len (variable_def) == 0:
 					pass
 				else:
@@ -103,7 +118,8 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 
 	# Check if non_wp occurs:
 	vulnerablities_non_wp = check_string_vulnerable(file_check, string_search_begin, string_search_middle, string_search_end, lines, verbosity)
-
+	for element in vulnerablities_non_wp:
+		print(element)
 
 	# Check if wp occurs:
 	vulnerablities_wp = check_string_vulnerable(file_check, string_search_begin_wp, string_search_middle, string_search_end, lines, verbosity)
