@@ -1,4 +1,5 @@
-# Function file from PHP-Vulnerability scans. Easier to edit:
+# Function file for PHP-Vulnerability scans.
+# Version 0.1
 import copy
 import string
 import numpy as np
