@@ -1,12 +1,6 @@
 # SourceCodeScanning Framework
 #### IN DEVELOPMENT! NOT USABLE (WAIT FOR VERSION 0.1) OR CONTRIBUTE (LOOK AT PORJECTS)!
 
-## Idea:
-#### The idea of the SourceCodeScanning Framework is to provide a SourceCodeScanning Framework, which analyzes projects statically for known vulnerable code snippets, which are linked to published exploits and vulnerabilities. Let's make code safer by contributing your vulnerabile code snippets!
-
-## Usage:
-![grafik](https://user-images.githubusercontent.com/54862244/149993027-b72d3654-4642-4547-8dc0-0891b7645753.png)
-
 ## Current Status:
 - [+] Contributors: 1
-- [+] Vulnerable Code Snippets: 0
+- [+] Vulnerable Code Snippets: 1
