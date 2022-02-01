@@ -8,7 +8,8 @@ Check [Current Status](#current-status) to see supported languages and vulnerabi
 
 
 ## The Tool:
-![grafik](https://user-images.githubusercontent.com/54862244/151966383-44c32883-4a3e-4274-ac7a-5f7b2185c33e.png)
+![grafik](https://user-images.githubusercontent.com/54862244/152027516-9b3d79d8-6933-4222-99da-3fc8adb92268.png)
+
 
 - p: Path to scan: Self Descriptive
 - v: Verbosity level: Default set to 0, set to 1 if you want to show vulnerable statements, in which the variable is declared as a function paremeter
