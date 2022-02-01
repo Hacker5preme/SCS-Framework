@@ -1,7 +1,5 @@
 # SCS - Framework 
-##### Version 0.1
-
-
+ 
 ## The Idea:
 The Idea of SCS-Framework is to provide a free, open source statical code analysis tool for finding vulnerabilities in source code. 
 SCS-Framework will be structured inspired by the metasploit-framework. As more and more vulnerable code snippets will be added, 
@@ -22,7 +20,9 @@ Contributions will be key to expand this project as much as possible. I will be 
 - Fork the project, write a scanner by using scanners from PHP_Snippets.py as an orientation point.In Version 0.2 at least JS vulnerabilities will follow. 
 - Open an Issue, writedown the vulnerability type and references and I will code it
 
+
 ## Current Status:
+- **Version 0.1**
 - Supported Languages:
   - PHP
 - Vulnerable Code Snippet scanner: 
