@@ -79,23 +79,27 @@ def check_string_vulnerable(file_content, string_begin, string_middle, string_en
 			# If a variable is present in the possible vulnerable snippet
 			else:
 				# Get Variablename
-				check = list(string_to_search[string_to_search.find('$') + 1:])
-				for element in check:
-					if element not in allowed_variable:
-						index = check.index(element)
-						break
-				variablename = '$' + ''.join(check[:index])
-				variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln, lines)
-				if len (variable_def) == 0:
-					pass
-				else:
-					# Line matching:
-					for line in lines:
-						if possible_vuln >= line[0] and possible_vuln <= line[1]:
-							vuln = [lines.index(line) + 1, string_to_search]
-							vuln.append(variable_def)
-							vulnerabilites.append(vuln)
+				# Get occurences of string_middle in string_to_search:
+				possible_variables = [i for i in range(len(string_to_search)) if file_content.startswith(string_middle, i)]
+				for possible_var in possible_variables:
+					check = list(string_to_search[possible_var + 1:])
+					for element in check:
+						if element not in allowed_variable:
+							index = check.index(element)
 							break
+					variablename = '$' + ''.join(check[:index])
+					variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln, lines)
+					if len (variable_def) == 0:
+						pass
+					else:
+						# Line matching:
+						for line in lines:
+							if possible_vuln >= line[0] and possible_vuln <= line[1]:
+								vuln = [lines.index(line) + 1, string_to_search]
+								vuln.append(variable_def)
+								vulnerabilites.append(vuln)
+								break
+						break
 
 	return vulnerabilites
 
