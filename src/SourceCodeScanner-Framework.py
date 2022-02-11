@@ -10,7 +10,7 @@ import os
 import argparse
 from colorama import init, Fore
 from PHP_Snippets import *
-
+from fnmatch import fnmatch
 
 print('')
 # Banner:
@@ -42,9 +42,9 @@ init(autoreset=True)
 # Code Scanner:
 def scancode(path, verbosity, interactive):
     php_discoveries = []
+    php_extensions = ['.phtml', '.php3', 'php4', '.php5', '.phps', '.html', '.php']
     # PHP Files to scan:
-    files_to_scan_php = [os.path.join(dp, f) for dp, dn, filenames in os.walk(path) for f in filenames if os.path.splitext(f)[1] == '.php']
-  
+    files_to_scan_php = [os.path.join(dp, f) for dp, dn, filenames in os.walk(path) for f in filenames if os.path.splitext(f)[1] in php_extensions]
     # Scan every php file for php_vulnerabilities
     for file in files_to_scan_php:
         file_content = open(file, 'r')
