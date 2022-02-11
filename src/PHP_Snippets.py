@@ -31,17 +31,17 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, line
 					break
 	if len(possible_code_finds) > 1:
 		# Determine closest position to vulnerable code snippet:
-		possiblities = np.asarray(possible_code_finds)
-		position = possiblities[possiblities < vuln_pos].max()
-		variable_string = file_content[position:]
-		variable_string = variable_string[:variable_string.find(';')]
-		if '$_GET[' in variable_string or '$_POST[' in variable_string:
-			# Line matching:
-			for line in lines:
-				if position >= line[0] and position <= line[1]:
-					information = [lines.index(line) + 1, variable_string, 0]
-					variable_definition.append(information)
-					break
+		for possible_code_find in possible_code_finds:
+			variable_string = file_content[possible_code_find:]
+			variable_string = variable_string[:variable_string.find(';')]
+			if '$_GET[' in variable_string or '$_POST[' in variable_string:
+				# Line matching:
+				for line in lines:
+					if position >= line[0] and position <= line[1]:
+						information = [lines.index(line) + 1, variable_string, 0]
+						variable_definition.append(information)
+						break
+				break
 	if len(possible_code_finds) == 0 and verbosity == 1:
 		# Check for definition in function !, otherwise no User-Input
 		function_finds = [i for i in range(len(file_content)) if file_content.startswith('function ', i)]
