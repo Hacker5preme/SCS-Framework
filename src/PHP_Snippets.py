@@ -111,6 +111,12 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	CVE_ref = 'https://nvd.nist.gov/vuln/detail/CVE-2020-18660'
 	wp_ref = 'https://developer.wordpress.org/reference/functions/wp_redirect/'
 	CVE_ref_wp = 'https://nvd.nist.gov/vuln/detail/CVE-2021-24165'
+	open_redirect_references_v2 = 'https://stackoverflow.com/questions/27123470/redirect-in-php-without-use-of-header-method'
+	'''
+	$URL="http://yourwebsite.com/";
+	echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
+	echo '<META HTTP-EQUIV="refresh" content="0;URL=' . $URL . '">';
+	'''
 
 	# Non WP: PHP Code snippet to redirect to URL
 	string_search_begin = r'header('
@@ -119,12 +125,20 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	# WP: PHP Code snippet to redirect to URL
 	string_search_begin_wp = 'wp_redirect('
 	file_check = copy.deepcopy(php_file)
-
+	# Non Wp: PHP code snippet to redirect URL V2:
+	string_search_begins_v2 = [r'<META HTTP-EQUIV="refresh"', r"<META HTTP-EQUIV='refresh'", r'<meta http-equiv="refresh', r"<meta http-equiv='refresh'"]
+	string_search_end_v2 = '>'
 	# Check if non_wp occurs:
 	vulnerablities_non_wp = check_string_vulnerable(file_check, string_search_begin, string_search_middle, string_search_end, lines, verbosity)
 
 	# Check if wp occurs:
 	vulnerablities_wp = check_string_vulnerable(file_check, string_search_begin_wp, string_search_middle, string_search_end, lines, verbosity)
+
+	# Check if non_wp_V2 occurs_
+	vulnerablities_non_wp_V2 = []
+	for check in string_search_begins_v2:
+		vulnerablities_non_wp_V2 =  vulnerablities_non_wp_V2 + check_string_vulnerable(file_check, check, string_search_middle, string_search_end_v2, lines, verbosity)
+
 	if len(vulnerablities_wp) != 0:
 		vulnerablities_wp = vulnerablities_wp[0]
 
@@ -137,6 +151,12 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 		if len (vulnerabiĺity_wp) == 2:
 			vulnerabiĺity_wp.append(0)
 		vulnerabilites.append(('Open-Redirect', path_file, vulnerabiĺity_wp[0], vulnerabiĺity_wp[1], [wp_ref, open_redirect_references, CVE_ref_wp], vulnerabiĺity_wp[2]))
+
+	for vulnerability_v2 in vulnerablities_non_wp_V2:
+		if len (vulnerability_v2) == 2:
+			vulnerability_v2.append(0)
+		vulnerabilites.append(('Open-Redirect', path_file, vulnerability_v2[0], vulnerability_v2[1], [open_redirect_references_v2, open_redirect_references, CVE_ref_wp], vulnerability_v2[2]))
+
 	return vulnerabilites
 
 
