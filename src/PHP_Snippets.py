@@ -80,15 +80,17 @@ def check_string_vulnerable(file_content, string_begin, string_middle, string_en
 			else:
 				# Get Variablename
 				# Get occurences of string_middle in string_to_search:
-				possible_variables = [i for i in range(len(string_to_search)) if file_content.startswith(string_middle, i)]
+
+				possible_variables = [i for i in range(len(string_to_search)) if string_to_search.startswith(string_middle, i)]
 				for possible_var in possible_variables:
-					check = list(string_to_search[possible_var + 1:])
+					check = list(string_to_search[possible_var +1:])
 					for element in check:
 						if element not in allowed_variable:
 							index = check.index(element)
 							break
 					variablename = '$' + ''.join(check[:index])
 					variable_def = backtrack_variable_PHP(variablename, file_content, verbosity, possible_vuln, lines)
+
 					if len (variable_def) == 0:
 						pass
 					else:
@@ -130,7 +132,6 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	string_search_end_v2 = '>'
 	# Check if non_wp occurs:
 	vulnerablities_non_wp = check_string_vulnerable(file_check, string_search_begin, string_search_middle, string_search_end, lines, verbosity)
-
 	# Check if wp occurs:
 	vulnerablities_wp = check_string_vulnerable(file_check, string_search_begin_wp, string_search_middle, string_search_end, lines, verbosity)
 
@@ -138,20 +139,14 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	vulnerablities_non_wp_V2 = []
 	for check in string_search_begins_v2:
 		vulnerablities_non_wp_V2 =  vulnerablities_non_wp_V2 + check_string_vulnerable(file_check, check, string_search_middle, string_search_end_v2, lines, verbosity)
-
-	if len(vulnerablities_wp) != 0:
-		vulnerablities_wp = vulnerablities_wp[0]
-
 	for vulnerability in vulnerablities_non_wp:
 		if len (vulnerability) == 2:
 			vulnerability.append(0)
 		vulnerabilites.append(('Open-Redirect', path_file, vulnerability[0], vulnerability[1], [clean_php_references, open_redirect_references, CVE_ref], vulnerability[2]) )
-
 	for vulnerabiĺity_wp in vulnerablities_wp:
 		if len (vulnerabiĺity_wp) == 2:
 			vulnerabiĺity_wp.append(0)
 		vulnerabilites.append(('Open-Redirect', path_file, vulnerabiĺity_wp[0], vulnerabiĺity_wp[1], [wp_ref, open_redirect_references, CVE_ref_wp], vulnerabiĺity_wp[2]))
-
 	for vulnerability_v2 in vulnerablities_non_wp_V2:
 		if len (vulnerability_v2) == 2:
 			vulnerability_v2.append(0)
