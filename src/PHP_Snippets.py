@@ -37,7 +37,7 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, line
 			if '$_GET[' in variable_string or '$_POST[' in variable_string:
 				# Line matching:
 				for line in lines:
-					if position >= line[0] and position <= line[1]:
+					if possible_code_find >= line[0] and possible_code_find <= line[1]:
 						information = [lines.index(line) + 1, variable_string, 0]
 						variable_definition.append(information)
 						break
@@ -114,11 +114,6 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	wp_ref = 'https://developer.wordpress.org/reference/functions/wp_redirect/'
 	CVE_ref_wp = 'https://nvd.nist.gov/vuln/detail/CVE-2021-24165'
 	open_redirect_references_v2 = 'https://stackoverflow.com/questions/27123470/redirect-in-php-without-use-of-header-method'
-	'''
-	$URL="http://yourwebsite.com/";
-	echo "<script type='text/javascript'>document.location.href='{$URL}';</script>";
-	echo '<META HTTP-EQUIV="refresh" content="0;URL=' . $URL . '">';
-	'''
 
 	# Non WP: PHP Code snippet to redirect to URL
 	string_search_begin = r'header('
@@ -155,3 +150,5 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	return vulnerabilites
 
 
+def scan_OS_Command_Injection(php_file, lines, path_file, verbosity):
+	vulnerabilites = []
