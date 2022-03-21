@@ -48,7 +48,10 @@ def scancode(path, verbosity, interactive):
     # Scan every php file for php_vulnerabilities
     for file in files_to_scan_php:
         file_content = open(file, 'r')
-        file_search = copy.deepcopy(file_content.read())
+        try:
+            file_search = copy.deepcopy(file_content.read())
+        except:
+            file_search = 'a \m dsd an'
         lines_check = list(file_search)
         lines = []
         elements_in_line = []

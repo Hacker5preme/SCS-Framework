@@ -22,7 +22,7 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, line
 		position = possible_code_finds[0]
 		variable_string = file_content[position:]
 		variable_string = variable_string[:variable_string.find(';')]
-		if '$_GET[' in variable_string or '$_POST[' in variable_string:
+		if '$_GET[' in variable_string or '$_POST[' in variable_string and vuln_pos > position:
 			# Line matching:
 			for line in lines:
 				if position >= line[0] and position <= line[1]:
@@ -34,7 +34,7 @@ def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, line
 		for possible_code_find in possible_code_finds:
 			variable_string = file_content[possible_code_find:]
 			variable_string = variable_string[:variable_string.find(';')]
-			if '$_GET[' in variable_string or '$_POST[' in variable_string:
+			if '$_GET[' in variable_string or '$_POST[' in variable_string and possible_code_find < vuln_pos:
 				# Line matching:
 				for line in lines:
 					if possible_code_find >= line[0] and possible_code_find <= line[1]:
@@ -135,9 +135,10 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 	for check in string_search_begins_v2:
 		vulnerablities_non_wp_V2 =  vulnerablities_non_wp_V2 + check_string_vulnerable(file_check, check, string_search_middle, string_search_end_v2, lines, verbosity)
 	for vulnerability in vulnerablities_non_wp:
-		if len (vulnerability) == 2:
-			vulnerability.append(0)
-		vulnerabilites.append(('Open-Redirect', path_file, vulnerability[0], vulnerability[1], [clean_php_references, open_redirect_references, CVE_ref], vulnerability[2]) )
+		if 'Location' in str(vulnerability):
+			if len (vulnerability) == 2:
+				vulnerability.append(0)
+			vulnerabilites.append(('Open-Redirect', path_file, vulnerability[0], vulnerability[1], [clean_php_references, open_redirect_references, CVE_ref], vulnerability[2]) )
 	for vulnerabiĺity_wp in vulnerablities_wp:
 		if len (vulnerabiĺity_wp) == 2:
 			vulnerabiĺity_wp.append(0)
@@ -152,3 +153,10 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 
 def scan_OS_Command_Injection(php_file, lines, path_file, verbosity):
 	vulnerabilites = []
+	# References PHP:
+	clean_php = 'https://www.php.net/manual/en/ref.exec.php'
+	os_injection_ref = 'https://cwe.mitre.org/data/definitions/78.html'
+
+	possible_string_search_begins_ends_pairs = [('exec(', ')'), ('passthru(', ')'), ('proc_open(', ')'), ('popen(', ')'),
+												('shell_exec(', ')'), ('system(', ')')]
+	string_search_middle = '$'
