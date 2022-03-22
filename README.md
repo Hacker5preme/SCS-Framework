@@ -28,4 +28,5 @@ Contributions will be key to expand this project as much as possible. I will be 
   - PHP
 - Vulnerable Code Snippet scanner: 
   - Open Redirect (CWE-601)
+  - Os Command Injection (CWE-78)
 
