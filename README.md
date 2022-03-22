@@ -19,7 +19,7 @@ Check [Current Status](#current-status) to see supported languages and vulnerabi
 ## Contributing:
 Contributions will be key to expand this project as much as possible. I will be working on it a lot, but just in my free time. There will be two possible contribution ways:
 - Fork the project, write a scanner by using scanners from PHP_Snippets.py as an orientation point.In Version 0.2 at least JS vulnerabilities will follow. 
-- Open an Issue, writedown the vulnerability type and references and I will code it
+- Open an Issue, write down the vulnerability type and references and I will code a scanner
 
 
 ## Current Status:
@@ -28,5 +28,5 @@ Contributions will be key to expand this project as much as possible. I will be 
   - PHP
 - Vulnerable Code Snippet scanner: 
   - Open Redirect (CWE-601)
-  - Os Command Injection (CWE-78)
+  - OS Command Injection (CWE-78)
 
