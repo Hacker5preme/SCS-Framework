@@ -1,9 +1,9 @@
 '''
 [@] Author: Ron Jost (Hacker5preme)
 [+] Contributors: 1
-[*] Vulnerable Code snippets: 1
+[*] CWE Scans: 2
+[x] Version 0.2 beta
 '''
-# Version 0.1
 
 import copy
 import os

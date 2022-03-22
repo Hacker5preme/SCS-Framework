@@ -1,5 +1,11 @@
+'''
+[@] Author: Ron Jost (Hacker5preme)
+[+] Contributors: 1
+[*] CWE Scans: 2
+[x] Version 0.2 beta
+'''
+
 # Function file for PHP-Vulnerability scans.
-# Version 0.1
 import copy
 import string
 import numpy as np
@@ -7,8 +13,11 @@ import numpy as np
 def PHP_vulnerabilities(php_file, lines, file, verbosity):
 	# Describes all vulnerabilites
 	# Scan for open_redirect:
+	php_vulnerabilites = []
 	vulnerabilities_open_redirect = scan_open_redirect(php_file, lines, file, verbosity)
-	return vulnerabilities_open_redirect
+	vulnerabilites_os_command_injection = scan_OS_Command_Injection(php_file, lines, file, verbosity)
+	php_vulnerabilites = vulnerabilities_open_redirect + vulnerabilites_os_command_injection
+	return php_vulnerabilites
 
 def backtrack_variable_PHP(variablename, file_content, verbosity, vuln_pos, lines):
 	# Backtrack variable:
@@ -154,9 +163,17 @@ def scan_open_redirect(php_file, lines, path_file, verbosity):
 def scan_OS_Command_Injection(php_file, lines, path_file, verbosity):
 	vulnerabilites = []
 	# References PHP:
-	clean_php = 'https://www.php.net/manual/en/ref.exec.php'
+	clean_php_references = 'https://www.php.net/manual/en/ref.exec.php'
 	os_injection_ref = 'https://cwe.mitre.org/data/definitions/78.html'
 
 	possible_string_search_begins_ends_pairs = [('exec(', ')'), ('passthru(', ')'), ('proc_open(', ')'), ('popen(', ')'),
 												('shell_exec(', ')'), ('system(', ')')]
 	string_search_middle = '$'
+	for possible_string in possible_string_search_begins_ends_pairs:
+		vulnerabilites_scan = check_string_vulnerable(php_file, possible_string[0], string_search_middle, possible_string[1], lines, verbosity)
+		for vulnerability in vulnerabilites_scan:
+			if len (vulnerability) == 2:
+				vulnerability.append(0)
+			vulnerabilites.append(('OS Command Injeciton', path_file, vulnerability[0], vulnerability[1], [clean_php_references, os_injection_ref], vulnerability[2]) )
+
+	return vulnerabilites
