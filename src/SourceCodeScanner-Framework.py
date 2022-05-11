@@ -2,15 +2,15 @@
 [@] Author: Ron Jost (Hacker5preme)
 [+] Contributors: 1
 [*] CWE Scans: 2
-[x] Version 0.2 beta
+[x] Version 0.2
 '''
 
-import copy
+
 import os
 import argparse
 from colorama import init, Fore
 from PHP_Snippets import *
-from fnmatch import fnmatch
+from tqdm import tqdm
 
 print('')
 # Banner:
@@ -46,10 +46,11 @@ def scancode(path, verbosity, interactive):
     # PHP Files to scan:
     files_to_scan_php = [os.path.join(dp, f) for dp, dn, filenames in os.walk(path) for f in filenames if os.path.splitext(f)[1] in php_extensions]
     # Scan every php file for php_vulnerabilities
-    for file in files_to_scan_php:
-        file_content = open(file, 'r')
+    print('Scanning: ' + path + ':')
+    for filename in tqdm(files_to_scan_php):
+        file_content = open(filename, 'r')
         try:
-            file_search = copy.deepcopy(file_content.read())
+            file_search = file_content.read()
         except:
             file_search = 'a \m dsd an'
         lines_check = list(file_search)
@@ -63,18 +64,20 @@ def scancode(path, verbosity, interactive):
             else:
                 elements_in_line.append(element)
         file_content.close()
+        Compressed = []
+        for element in lines:
+            Compressed.append((element, file_search[element[0]:element[1]]))
         if len(php_discoveries) == 0:
-            php_discoveries = PHP_vulnerabilities(file_search, lines, file, verbosity)
+            php_discoveries = PHP_vulnerabilities(Compressed, filename, verbosity)
         else:
-            php_discoveries = php_discoveries + PHP_vulnerabilities(file_search, lines, file, verbosity)
-
+            php_discoveries = php_discoveries + PHP_vulnerabilities(Compressed, filename, verbosity)
+            
     Output(php_discoveries, interactive)
     
 # Output:
 def Output(vulns, interactive):
     # Output vulnerability finds:
-
-    print('Scanning: ' + path + ':')
+    '''
     print('')
     color = Fore.RED
     i = 0
@@ -105,6 +108,10 @@ def Output(vulns, interactive):
                 print(Fore.BLUE + '[i] Variable Definition: ' )
                 print(Fore.BLUE + str(vulnerability[1]) + ':' + str(variable_info[0][0]))
                 print(Fore.BLUE + variable_info[0][1])
+                if len(variable_info) > 1:
+                    for info in range(1, len(variable_info)):
+                        print(Fore.BLUE + str(vulnerability[1]) + ':' + str(variable_info[i])[0])
+                        print(Fore.BLUE + str(variable_info[i][1]))
                 print('')
                 print('References: ')
                 for ref in vulnerability[4]:
@@ -112,6 +119,6 @@ def Output(vulns, interactive):
                 print('')
 
             details = input('Enter vulnerability ID to display more Information or exit: ')
-
+    '''
 
 scancode(path, verbosity, interactive)
