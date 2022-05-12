@@ -2,10 +2,9 @@
 [@] Author: Ron Jost (Hacker5preme)
 [+] Contributors: 1
 [*] CWE Scans: 2
-[x] Version 0.2 beta
+[x] Version 0.2 
 '''
 
-# Function file for PHP-Vulnerability scans.
 import copy
 import string
 import numpy as np
@@ -18,9 +17,7 @@ def PHP_vulnerabilities(Compressed, filename, verbosity):
     return php_vulnerabilites
 
 def track_variable(Variablename, Compressed, Vulnerable_line, Start):
-    # Find line and construct code to search through 
     search_compressed = Compressed[:Vulnerable_line][::-1]
-    #print(search_compressed)
     possible_decls = [Variablename + '=', Variablename + ' =']
     for info in search_compressed:      
         if possible_decls[0] in info[1] or possible_decls[1] in info[1]:
@@ -28,16 +25,12 @@ def track_variable(Variablename, Compressed, Vulnerable_line, Start):
             break
         else:
             pass
-    #print(line_to_check)
     try:
         Start.append(line_to_check)        
         if '$_GET[' in line_to_check[1][1] or '$_POST[' in line_to_check[1][1]:
             pass
         else:
-            #search_compressed = Compressed[:line_to_check[0]][::-1]
-            # Check witch variable to check:
             string_to_check = line_to_check[1][1][line_to_check[1][1].find('=') +1:]
-            # Second variable (only take first)
             allowed_variable = list(string.ascii_letters) + ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_', '$']
             string_to_check = list(string_to_check[string_to_check.find('$'):])
             second_variable = ''.join([x for x in string_to_check if x in allowed_variable])
@@ -54,7 +47,7 @@ def check_vulnerable_line(Compressed, String_begin, String_end):
     for possible_vulnerability in pos_code_finds:
         string_to_search = possible_vulnerability[1]
         if '$_GET[' in string_to_search or '$_POST[' in string_to_search:
-            vulns.append((Compressed.index(possible_vulnerability), possible_vulnerability))
+            vulns.append([(Compressed.index(possible_vulnerability), possible_vulnerability)])
         else:
             possible_variables = [i for i in range(len(string_to_search)) if string_to_search.startswith('$', i)]
             variable_defs = []

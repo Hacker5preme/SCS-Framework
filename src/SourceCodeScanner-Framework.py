@@ -76,49 +76,35 @@ def scancode(path, verbosity, interactive):
     
 # Output:
 def Output(vulns, interactive):
-    # Output vulnerability finds:
-    '''
     print('')
     color = Fore.RED
     i = 0
     for vuln in vulns:
         print(color + '[' + str(i) + ']' + ' Possible ' + vuln[0] + ':')
-        print(color + str(vuln[1]) + ':' + str(vuln[2]))
-        print(Fore.YELLOW + vuln[3])
+        print(color + str(vuln[1]) + ':' + str(vuln[2][0]))
+        print(Fore.YELLOW + ' '.join(vuln[2][1][1].split()))
         print('')
         i = i +1
     if interactive == 1:
         details = input('Enter vulnerability ID to display more Information or exit: ')
         while details != 'exit':
             print('')
+            print('')
             vulnerability = vulns[int(details)]
             print(color + '[!]' + ' Possible ' + vulnerability[0] + ':')
+            print(color + str(vulnerability[1]) + ':' + str(vulnerability[2][0]))
             print('')
-            print(color + str(vulnerability[1]) + ':' + str(vulnerability[2]))
-            print(Fore.YELLOW + vulnerability[3])
+            print(Fore.YELLOW + ' '.join(vulnerability[2][1][1].split()))
+            if len(vulnerability[3]) > 0:
+                print('')
+                print(Fore.BLUE + 'Variable Definition:')
+                for definition in vulnerability[3]:
+                    print(Fore.BLUE + ' '.join(definition[1][1].split()))
             print('')
-            if type(vulnerability[5]) == int:
-                print('References: ')
-                for ref in vulnerability[4]:
-                    print(' - ' + ref)
-                print('')
-            else:
-                variable_info = vulnerability[5]
-                # Check if it is a function or straight variable definition
-                print(Fore.BLUE + '[i] Variable Definition: ' )
-                print(Fore.BLUE + str(vulnerability[1]) + ':' + str(variable_info[0][0]))
-                print(Fore.BLUE + variable_info[0][1])
-                if len(variable_info) > 1:
-                    for info in range(1, len(variable_info)):
-                        print(Fore.BLUE + str(vulnerability[1]) + ':' + str(variable_info[i])[0])
-                        print(Fore.BLUE + str(variable_info[i][1]))
-                print('')
-                print('References: ')
-                for ref in vulnerability[4]:
-                    print(' - ' + ref)
-                print('')
-
+            print(Fore.GREEN + 'References:')
+            for ref in vulnerability[4]:
+                print(Fore.GREEN + ref)
+            print('')
             details = input('Enter vulnerability ID to display more Information or exit: ')
-    '''
 
 scancode(path, verbosity, interactive)
