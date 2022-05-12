@@ -8,8 +8,7 @@ Check [Current Status](#current-status) to see supported languages and vulnerabi
 
 
 ## The Tool:
-![grafik](https://user-images.githubusercontent.com/54862244/152027516-9b3d79d8-6933-4222-99da-3fc8adb92268.png)
-
+![grafik](https://user-images.githubusercontent.com/54862244/168086495-3400e6e3-f107-4afb-b104-67596e5a025d.png)
 - p: Path to scan: Self Descriptive
 - i: Interactive mode: Default set to 1, set to 0 if you don't want have detail expansion
 
